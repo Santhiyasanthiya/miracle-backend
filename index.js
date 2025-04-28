@@ -30,7 +30,10 @@ const transporter = nodemailer.createTransport({
   });
   
 
-
+  app.post('/', (req, res) => {
+    console.log('Form data received:', req.body); // optional: log the data
+    res.status(200).json({ message: 'Form submitted successfully!' });
+  });
 
 
 app.post("/api/contact", async (req, res) => {
