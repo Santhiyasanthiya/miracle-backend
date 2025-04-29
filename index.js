@@ -65,7 +65,7 @@ app.post("/api/contact", async (req, res) => {
                     </p>
                   </li>
                   <br/>
-                  <li style="display: flex; align-items: center;"> <p><strong>Subject:</strong> ${subject}</p></li>
+              
                   <br/>
                   <li style="display: flex; align-items: center;"><p><strong>Name:</strong> ${name}</p></li>
                   <br/>
