@@ -123,6 +123,94 @@ India.</p>
   }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+//************************  */ STUDENT CONTACT FORM **********************
+
+
+
+
+app.post("/api/student-contact", async (req, res) => {
+  const { name, email, phone, course, batch, source, description } = req.body;
+
+  try {
+    // Save to MongoDB
+   
+    await client.db("MedicleAlpha").collection("student_contact").insertOne({
+      name,
+      email,
+      phone,
+      course,
+      batch,
+      source,
+      description,
+      submittedAt: new Date(),
+    });
+
+    // Admin Email
+    const adminMailOptions = {
+      from: process.env.EMAIL,
+      to: "alphaingen2080@gmail.com",
+      subject: "New Student Inquiry",
+      html: `
+        <div style="padding: 20px; border-radius: 10px; border: 1px solid #ccc;">
+          <h2 style="color: darkgreen;">New Student Inquiry Received</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Course:</strong> ${course}</p>
+          <p><strong>Batch:</strong> ${batch}</p>
+          <p><strong>Source:</strong> ${source}</p>
+          <p><strong>Description:</strong> ${description}</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(adminMailOptions);
+
+    // Student Acknowledgement Email
+    const studentMailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Thanks for contacting Alphaingen!",
+      html: `
+        <div style="padding: 20px; border-radius: 10px; border: 1px solid #ccc;">
+          <h2 style="color: darkblue;">Dear ${name},</h2>
+          <p>Thank you for showing interest in our course: <strong>${course}</strong>.</p>
+          <p>We will reach out to you soon regarding the ${batch} batch.</p>
+          <p>Best Regards,<br/>Team Alphaingen</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(studentMailOptions);
+
+    res.status(201).send({
+      message: "Student contact saved and emails sent successfully",
+    });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+
 app.listen(PORT, () => {
   console.log("Listening successfully on port", PORT);
 });
